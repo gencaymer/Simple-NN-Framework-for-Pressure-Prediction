@@ -1,33 +1,71 @@
-Xx = readmatrix('bc_limitedrange.csv');
-Yy = readmatrix('bc_pressure_limited.csv');
+Xx = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc_limitedrange.csv');
+Yy = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc_pressure_limited.csv');
 X = Xx';
 Y = Yy';
 m = size(X,2);
-X = mapminmax(X,-1,1);
-[Y,PS] = mapminmax(Y,-1,1);
+%% Normalizing the dataset
 
-P = 0.70;
+[X,PS_X] = mapminmax(X,-1,1);
+[Y,PS_Y] = mapminmax(Y,-1,1);
+%% Splitting the dataset
+
+P1 = 0.70;
+P2 = 0.15;
 idx = randperm(m);
-trainInd = X(:,idx(1:round(P*m))) ; 
-testInd = X(:,idx(round(P*m)+1:end)) ;
-trainOut =Y(:,idx(1:round(P*m)));
-testOut = Y(:,idx(round(P*m)+1:end));
+trainInd = X(:,idx(1:round(P1*m))) ; 
+trainOut =Y(:,idx(1:round(P1*m)));
 
-% [trainInd,testInd] = divideind(X,1:600,600:end);
-% [trainOut,testOut] = divideind(Y,1:600,600:end);
-[nx,mi] = size(trainInd);
-[ny,mo] = size(trainOut);
+cvInd = X(:,idx((round(P1*m)+1):round((P1+P2)*m)));
+cvOut = Y(:,idx((round(P1*m)+1):round((P1+P2)*m)));
+
+testInd = X(:,idx(((round((P1+P2)*m))+1):end));
+testOut = Y(:,idx(((round((P1+P2)*m))+1):end));
+%% Layer Sizes
+
+nx = size(trainInd,1);
+ny = size(trainOut,1);
+%% Hyper parameters
+
 n_hidden = 7;
-
-%Normalizing the data between (-1,1)
-
-
 alpha = 0.1;
-num_iterations = 100;
-[W1, b1, W2, b2, A2, cost] = nn_model(trainInd,trainOut,n_hidden, num_iterations, alpha);
+epochs = 100;
+%% Initializing the forward propagation
 
-Y_again = mapminmax('reverse',trainOut,PS);
-A2_again = mapminmax('reverse',A2,PS);
+[n_x,n_h,n_y] = layer_sizes(trainInd,trainOut,n_hidden);
+[W1, b1, W2, b2] = initialize(nx,n_hidden,ny);
+%% Training Process
+
+ for i=1:epochs
+        [Z1, A1, Z2, A2] = forwardprop(trainInd,W1,b1,W2,b2);
+        cost_train = computeCost(A2,trainOut);
+        cost_train = mean(cost_train,'all');
+        cost_cv = predict(cvInd,cvOut,W1,b1,W2,b2,PS_Y);
+        [dW1, db1, dW2, db2] = backprop(trainInd,trainOut,W1,b1,W2,b2,Z1,A1,Z2,A2);
+        [W1, b1, W2, b2] = update(W1,b1,W2,b2,dW1,db1,dW2,db2,alpha);
+        
+        dd = animatedline('Color','b','Marker','square','MarkerFaceColor','b');
+        ff = animatedline('Color','r','Marker','square','MarkerFaceColor','r');
+        addpoints(dd,i,cost_train)
+        addpoints(ff,i,cost_cv)
+        view(2)
+        drawnow update
+ end
+%% Percantage Errors
+
+perc_train = (cost_train/(1-(-1)))*100;
+perc_cv =  (cost_cv/(1-(-1)))*100;
+fprintf('<strong>Training cost is : %.2f%% </strong> \n',...
+    perc_train)
+fprintf('<strong>Cross Validation cost is : %.2f%%</strong> \n',...
+    perc_cv)
+[cost_test, A2_test] = predict(testInd,testOut,W1,b1,W2,b2,PS_Y);
+perc_test =(cost_test/(1-(-1)))*100;
+fprintf('<strong>Test cost is : %.2f%% </strong> \n',...
+    perc_test)
+%% Visualizing an example
+
+Y_again = mapminmax('reverse',testOut,PS_Y);
+A2_again = mapminmax('reverse',A2_test,PS_Y);
 Y_again_rand = reshape(Y_again(:,1),50,50);
 A2_again_rand = reshape(A2_again(:,1),50,50);
 Y_again_rand_bars = Y_again_rand /(10^5);
@@ -63,6 +101,3 @@ title('Pressure Difference in Bars')
 shading interp
 axis tight
 colorbar
-
-predict(testInd,testOut,W1,b1,W2,b2,PS)
-

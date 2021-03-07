@@ -1,12 +1,14 @@
-clf; clc; clear all;
+clf; clc;
 %% Loading the data
-X_load = readmatrix('rate_change.csv');
-Y_load = readmatrix('rate_change_pressure.csv');
+
+X_load = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\rate_change.csv');
+Y_load = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\rate_change_pressure.csv');
 %% For convention the matrices are transposed as (n x m)
+
 X_load = X_load';
 Y_load = Y_load';
-
 %% Trying different m values
+
 dataset_sizes = [1000 2500 4000 6000 9000 10500];
 train_ratio = 0.7;
 cv_ratio = 0.15;
@@ -17,12 +19,12 @@ for j=1:numel(dataset_sizes)
 X = X_load(:,1:dataset_sizes(j)) ; 
 Y = Y_load(:,1:dataset_sizes(j)) ;
 m = size(X,2);
-
 %% Normalizing the input-target between (-1,1)
+
 [X_norm, PS_X] = mapminmax(X, -1, 1);
 [Y_norm, PS_Y] = mapminmax(Y, -1, 1);
-
 %% Splitting the dataset: training, cv and test
+
 [trainInd,cvInd,testInd] = divideind(X_norm,(1:(round(m*train_ratio))),((round(m*train_ratio+1)...
     :(round(m*(train_ratio+cv_ratio))))),(round((m*(train_ratio+cv_ratio)+1)):dataset_sizes(j)));
 [trainOut,cvOut,testOut] = divideind(Y_norm,(1:(round(m*train_ratio))),((round(m*train_ratio+1)...
@@ -40,15 +42,16 @@ rate_std_test(j)= std(testInd(11,:),0,2);
 fprintf('Normalized Deviations for dataset %d are= Training: %.5f , CV: %.5f, Test: %.5f \n',j,...
     rate_std_tr(j),rate_std_cv(j),rate_std_test(j))
 %% Layer sizes for the input and the output layer
+
 nx = size(trainInd,1);
 ny = size(trainOut,1);
-
 %% Hyper parameters
+
 n_hidden = 5;
 alpha = 0.1;
 epochs = 30;
-
 %% Training Process
+
 [n_x,n_h,n_y] = layer_sizes(trainInd,trainOut,n_hidden);
 [W1, b1, W2, b2] = initialize(nx,n_hidden,ny);
 figure('Name','Training Graph')
@@ -70,8 +73,8 @@ ylabel('Averaged Cost Over Examples')
         view(2)
         drawnow update
   end
-  
 %% Percentage errors
+
 perc_train(j) = (cost_train(j)/(1-(-1)))*100;
 perc_cv(j) =  (cost_cv(j)/(1-(-1)))*100;
 fprintf('<strong>Training cost for  dataset %d  is : %.2f%% </strong> \n',j,...
@@ -85,6 +88,7 @@ fprintf('<strong>Test cost for dataset %d  is : %.2f%% </strong> \n',j,...
 fprintf('---------------------------------------------------------------------\n')
 end
 %% Plotting the overall Results
+
 figure('Name','Error Graph for Datasets')
 plot(dataset_sizes, perc_train,'-bs')
 title('Error Measurements for Various Dataset Dimensions')
@@ -96,11 +100,9 @@ hold on
 plot(dataset_sizes, perc_test,'-ks')
 legend('Training Set','Cross-Validation Set','Test Set')
 hold off
-%%
-% %% Denormalizing the test data
-% Y_test = mapminmax('reverse',testOut,PS_Y);
+%% 
+% %% Denormalizing the test data Y_test = mapminmax('reverse',testOut,PS_Y); 
 % A2_test = mapminmax('reverse',A2_test,PS_Y);
-
 
 % %Visualizing a random example
 % Y_test_ex = reshape(Y_test(:,35),50,50);
@@ -142,5 +144,3 @@ hold off
 % axis tight
 % view(2)
 % colorbar
-
-
