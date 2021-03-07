@@ -6,12 +6,14 @@ function [W1, b1, W2, b2, A2,cost] =nn_model(X,Y,n_h, num_iterations, alpha)
         cost = computeCost(A2,Y);
         [dW1, db1, dW2, db2] = backprop(X,Y,W1,b1,W2,b2,Z1,A1,Z2,A2);
         [W1, b1, W2, b2] = update(W1,b1,W2,b2,dW1,db1,dW2,db2,alpha);
-        h = animatedline('Marker','+');
-    
-        xlabel('Iteration Count')
-        title('Average Cost Over Normalized Training Samples [-1,1]')
-        addpoints(h,i,mean(cost,'all'))
-        drawnow
+        
+%         h = animatedline('Marker','+','Color','g');
+%         xlabel('Iteration Count')
+%         title('Average Cost Over Normalized Training Samples [-1,1]')
+%         grid on
+%         addpoints(h,i,mean(cost,'all'))
+%         drawnow
     end
-    fprintf("Training set cost is: %f \n" ,(mean(cost,'all')))
+    cost = mean(cost,'all');
+%     fprintf("Training set cost is: %f \n" ,cost)
 end
