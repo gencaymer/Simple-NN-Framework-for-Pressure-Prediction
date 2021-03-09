@@ -1,3 +1,4 @@
+clc; clf; clear all;
 Xx = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\poroperm.csv');
 Yy = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\poroperm_pressure.csv');
 X = Xx';
@@ -27,9 +28,9 @@ nx = size(trainInd,1);
 ny = size(trainOut,1);
 %% Hyper parameters
 
-n_hidden = 7;
+n_hidden = 5;
 alpha = 0.1;
-epochs = 100;
+epochs = 20;
 %% nitializing the forward propagation
 
 [n_x,n_h,n_y] = layer_sizes(trainInd,trainOut,n_hidden);
@@ -53,7 +54,6 @@ epochs = 100;
  end
  
 %% Percantage Errors
-
 perc_train = (cost_train/(1-(-1)))*100;
 perc_cv =  (cost_cv/(1-(-1)))*100;
 fprintf('<strong>Training cost is : %.2f%% </strong> \n',...
@@ -64,8 +64,31 @@ fprintf('<strong>Cross Validation cost is : %.2f%%</strong> \n',...
 perc_test =(cost_test/(1-(-1)))*100;
 fprintf('<strong>Test cost is : %.2f%% </strong> \n',...
     perc_test)
-%% Visualization
+%% Mean and STD calculations
+rate_mean_tr = mean(trainInd(3,:),'all');
+rate_mean_cv = mean(cvInd(3,:),'all');
+rate_mean_test = mean(testInd(3,:),'all');
+fprintf('Normalized means for porosity is = Training: %.5f , CV: %.5f, Test: %.5f \n',...
+    rate_mean_tr,rate_mean_cv,rate_mean_test)
 
+rate_std_tr= std(trainInd(3,:),0,2);
+rate_std_cv= std(cvInd(3,:),0,2);
+rate_std_test= std(testInd(3,:),0,2);
+fprintf('Normalized deviations for porosity is = Training: %.5f , CV: %.5f, Test: %.5f \n',...
+    rate_std_tr,rate_std_cv,rate_std_test)
+
+rate_mean_tr = mean(trainInd(5,:),'all');
+rate_mean_cv = mean(cvInd(5,:),'all');
+rate_mean_test = mean(testInd(5,:),'all');
+fprintf('Normalized means for permeabilty is = Training: %.5f , CV: %.5f, Test: %.5f \n',...
+    rate_mean_tr,rate_mean_cv,rate_mean_test)
+
+rate_std_tr= std(trainInd(5,:),0,2);
+rate_std_cv= std(cvInd(5,:),0,2);
+rate_std_test= std(testInd(5,:),0,2);
+fprintf('Normalized deviations for permeability is = Training: %.5f , CV: %.5f, Test: %.5f \n',...
+    rate_std_tr,rate_std_cv,rate_std_test)
+%% Visualization
 Y_again = mapminmax('reverse',testOut,PS_Y);
 A2_again = mapminmax('reverse',A2_test,PS_Y);
 Y_again_rand = reshape(Y_again(:,1),50,50);

@@ -1,4 +1,4 @@
-clf; clc;
+clc; clf; clear all;
 %% Loading the data
 
 X_load = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\rate_change.csv');
@@ -9,7 +9,7 @@ X_load = X_load';
 Y_load = Y_load';
 %% Trying different m values
 
-dataset_sizes = [1000 2500 4000 6000 9000 10500];
+dataset_sizes = [1000 2500 4000 5000 10500];
 train_ratio = 0.7;
 cv_ratio = 0.15;
 test_ratio = 0.15;
@@ -33,13 +33,13 @@ m = size(X,2);
 rate_mean_tr(j) = mean(trainInd(11,:),'all');
 rate_mean_cv(j) = mean(cvInd(11,:),'all');
 rate_mean_test(j) = mean(testInd(11,:),'all');
-fprintf('Normalized means for dataset %d are= Training: %.5f , CV: %.5f, Test: %.5f \n',j,...
+fprintf('Normalized means for dataset %d are = Training: %.5f , CV: %.5f, Test: %.5f \n',j,...
     rate_mean_tr(j),rate_mean_cv(j),rate_mean_test(j))
 
 rate_std_tr(j)= std(trainInd(11,:),0,2);
 rate_std_cv(j)= std(cvInd(11,:),0,2);
 rate_std_test(j)= std(testInd(11,:),0,2);
-fprintf('Normalized Deviations for dataset %d are= Training: %.5f , CV: %.5f, Test: %.5f \n',j,...
+fprintf('Normalized Deviations for dataset %d are = Training: %.5f , CV: %.5f, Test: %.5f \n',j,...
     rate_std_tr(j),rate_std_cv(j),rate_std_test(j))
 %% Layer sizes for the input and the output layer
 
@@ -54,10 +54,10 @@ epochs = 30;
 
 [n_x,n_h,n_y] = layer_sizes(trainInd,trainOut,n_hidden);
 [W1, b1, W2, b2] = initialize(nx,n_hidden,ny);
-figure('Name','Training Graph')
-title(['Training process for ',num2str(j),'. dataset'])
-xlabel('Epoch')
-ylabel('Averaged Cost Over Examples')
+        figure('Name','Training Graph')
+        title(['Training process for ',num2str(j),'. dataset'])
+        xlabel('Epoch')
+        ylabel('Averaged Cost Over Examples')
   for i=1:epochs
         [Z1, A1, Z2, A2] = forwardprop(trainInd,W1,b1,W2,b2);
         cost_train = computeCost(A2,trainOut);
@@ -100,47 +100,47 @@ hold on
 plot(dataset_sizes, perc_test,'-ks')
 legend('Training Set','Cross-Validation Set','Test Set')
 hold off
-%% 
-% %% Denormalizing the test data Y_test = mapminmax('reverse',testOut,PS_Y); 
-% A2_test = mapminmax('reverse',A2_test,PS_Y);
+% 
+%% Denormalizing the test data Y_test = mapminmax('reverse',testOut,PS_Y); 
+A2_test = mapminmax('reverse',A2_test,PS_Y);
+Y_test = mapminmax('reverse',testOut,PS_Y);
+%Visualizing a random example
+Y_test_ex = reshape(Y_test(:,35),50,50);
+A2_test_ex = reshape(A2_test(:,35),50,50);
+Y_test_ex_bars = Y_test_ex /(10^5);
+A2_test_ex_bars = A2_test_ex /(10^5);
+difference = (Y_test_ex_bars-A2_test_ex_bars);
 
-% %Visualizing a random example
-% Y_test_ex = reshape(Y_test(:,35),50,50);
-% A2_test_ex = reshape(A2_test(:,35),50,50);
-% Y_test_ex_bars = Y_test_ex /(10^5);
-% A2_test_ex_bars = A2_test_ex /(10^5);
-% difference = (Y_test_ex_bars-A2_test_ex_bars);
+figure
+subplot(2,2,1)
+surf(1:50,1:50,(Y_test_ex_bars))
+colormap(turbo)
+xlabel('X')
+ylabel('Y')
+title('Ground Truth Pressures')
+shading interp
+axis tight
+view(2)
+colorbar
 
-% figure
-% subplot(2,2,1)
-% surf(1:50,1:50,(Y_test_ex_bars))
-% colormap(turbo)
-% xlabel('X')
-% ylabel('Y')
-% title('Ground Truth Pressures')
-% shading interp
-% axis tight
-% view(2)
-% colorbar
-% 
-% 
-% subplot(2,2,3)
-% surf(1:50,1:50,(A2_test_ex_bars))
-% xlabel('X')
-% ylabel('Y')
-% title('Estimated Pressures')
-% shading interp
-% axis tight
-% view(2)
-% colorbar
-% 
-% subplot(2,2,[2 4])
-% surf(1:50,1:50,difference)
-% 
-% xlabel('X')
-% ylabel('Y')
-% title('Pressure Difference in Bars')
-% shading interp
-% axis tight
-% view(2)
-% colorbar
+
+subplot(2,2,3)
+surf(1:50,1:50,(A2_test_ex_bars))
+xlabel('X')
+ylabel('Y')
+title('Estimated Pressures')
+shading interp
+axis tight
+view(2)
+colorbar
+
+subplot(2,2,[2 4])
+surf(1:50,1:50,difference)
+
+xlabel('X')
+ylabel('Y')
+title('Pressure Difference in Bars')
+shading interp
+axis tight
+view(2)
+colorbar

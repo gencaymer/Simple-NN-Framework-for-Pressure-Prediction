@@ -15,5 +15,6 @@ function [W1, b1, W2, b2, A2,cost] =nn_model(X,Y,n_h, num_iterations, alpha)
 %         drawnow
     end
     cost = mean(cost,'all');
-%     fprintf("Training set cost is: %f \n" ,cost)
+    fprintf("Training set cost for %d nodes and %.3f gradient is: %f \n" ,n_h,alpha,cost)
+% clf
 end

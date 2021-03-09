@@ -1,17 +1,17 @@
-Xx = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc_limitedrange.csv');
-Yy = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc_pressure_limited.csv');
+clc; clf; clear all;
+Xx = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc.csv');
+Yy = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\bc_pressure.csv');
 X = Xx';
 Y = Yy';
 m = size(X,2);
 %% Normalizing the dataset
-
 [X,PS_X] = mapminmax(X,-1,1);
 [Y,PS_Y] = mapminmax(Y,-1,1);
 %% Splitting the dataset
-
 P1 = 0.70;
 P2 = 0.15;
 idx = randperm(m);
+
 trainInd = X(:,idx(1:round(P1*m))) ; 
 trainOut =Y(:,idx(1:round(P1*m)));
 
@@ -21,20 +21,16 @@ cvOut = Y(:,idx((round(P1*m)+1):round((P1+P2)*m)));
 testInd = X(:,idx(((round((P1+P2)*m))+1):end));
 testOut = Y(:,idx(((round((P1+P2)*m))+1):end));
 %% Layer Sizes
-
 nx = size(trainInd,1);
 ny = size(trainOut,1);
 %% Hyper parameters
-
-n_hidden = 7;
-alpha = 0.1;
+n_hidden = 5;
+alpha = 0.01;
 epochs = 100;
 %% Initializing the forward propagation
-
 [n_x,n_h,n_y] = layer_sizes(trainInd,trainOut,n_hidden);
 [W1, b1, W2, b2] = initialize(nx,n_hidden,ny);
 %% Training Process
-
  for i=1:epochs
         [Z1, A1, Z2, A2] = forwardprop(trainInd,W1,b1,W2,b2);
         cost_train = computeCost(A2,trainOut);
@@ -51,7 +47,6 @@ epochs = 100;
         drawnow update
  end
 %% Percantage Errors
-
 perc_train = (cost_train/(1-(-1)))*100;
 perc_cv =  (cost_cv/(1-(-1)))*100;
 fprintf('<strong>Training cost is : %.2f%% </strong> \n',...
@@ -63,7 +58,6 @@ perc_test =(cost_test/(1-(-1)))*100;
 fprintf('<strong>Test cost is : %.2f%% </strong> \n',...
     perc_test)
 %% Visualizing an example
-
 Y_again = mapminmax('reverse',testOut,PS_Y);
 A2_again = mapminmax('reverse',A2_test,PS_Y);
 Y_again_rand = reshape(Y_again(:,1),50,50);
@@ -81,7 +75,6 @@ shading interp
 axis tight
 %view(2)
 colorbar
-
 
 subplot(2,2,3)
 surf(1:50,1:50,(A2_again_rand_bars))
