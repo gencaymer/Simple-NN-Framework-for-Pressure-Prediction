@@ -1,3 +1,18 @@
 
 *.csv
 Datasets/input.csv
+Datasets/input.csv
+Matlab ANN Toolbox Applications/FinalMix.mlx
+Matlab ANN Toolbox Applications/MultiWellCase.mlx
+Matlab ANN Toolbox Applications/FinalMixNorm.mat
+Matlab ANN Toolbox Applications/MultiWellNet.mat
+Matlab ANN Toolbox Applications/Poroperm.mlx
+Matlab ANN Toolbox Applications/PoroPerm20NodesNet.mat
+Matlab ANN Toolbox Applications/SingleRate10Net.mat
+Matlab ANN Toolbox Applications/SingleWellRate.mlx
+nn_model.m
+multirate_case_2wells.m
+deepnet.mat
+Matlab ANN Toolbox Applications/FinalMixANN.m
+Matlab ANN Toolbox Applications/Porosity_Permeability_Case_ANNLAB.m
+Datasets/input.csv

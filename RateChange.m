@@ -1,4 +1,4 @@
-clc; clf; clear all;
+clc; clf; 
 %% Loading the data
 
 X_load = readmatrix('C:\Users\GençayMerey\Desktop\Projects\Test\Simple-NN-Framework-for-Pressure-Prediction\Datasets\rate_change.csv');

@@ -35,8 +35,8 @@ epochs = 50;
 [W1, b1, W2, b2, A2, cost_train] = nn_model(trainInd, trainOut,...
     n_hidden, epochs, alpha);
     cost_train = cost_train;
-    cost_cv = predict(cvInd,cvOut,W1,b1,W2,b2,PS_Y);
-    [cost_test, A2_test] = predict(testInd,testOut,W1,b1,W2,b2,PS_Y);
+    cost_cv = predict(cvInd,cvOut,W1,b1,W2,b2);
+    [cost_test, A2_test] = predict(testInd,testOut,W1,b1,W2,b2);
     
 %% Percentage errors
 perc_train = (cost_train/2)*100;
@@ -53,8 +53,8 @@ fprintf('---------------------------------------------------------------------\n
 %% Visualizing a random example
 A2_test = mapminmax('reverse',A2_test,PS_Y);
 Y_test = mapminmax('reverse',testOut,PS_Y);
-Y_test_ex = reshape(Y_test(:,80),50,50);
-A2_test_ex = reshape(A2_test(:,80),50,50);
+Y_test_ex = reshape(Y_test(:,90),50,50);
+A2_test_ex = reshape(A2_test(:,90),50,50);
 Y_test_ex_bars = Y_test_ex /(10^5);
 A2_test_ex_bars = A2_test_ex /(10^5);
 difference = (Y_test_ex_bars-A2_test_ex_bars);

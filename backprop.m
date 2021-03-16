@@ -1,9 +1,10 @@
 function [dW1, db1, dW2, db2] = backprop(Xn,Yn,W1,b1,W2,b2,Z1,A1,Z2,A2)
+%% Backward Propagation function according to a simple network with tanh as activation function and reLu as output
         m = size(Xn,2);
         %Calculation of dZ2
         dJ_dA2 = 2 * (A2 - Yn); % (ny x m)
-        %dA2_dZ2 =(Z2>0);
-        dA2_dZ2 =  (1 - (tanh(Z2).^2)); %Derivative of the activation function(relu) in output layer  % (ny x m)
+        dA2_dZ2 =(Z2>0);
+%         dA2_dZ2 =  (1 - (tanh(Z2).^2)); %Derivative of the activation function(relu) in output layer  % (ny x m)
         dJ_dZ2 = dJ_dA2 .* dA2_dZ2 ; % (ny x m)
         %Calculation of dW2
         dZ2_dW2 = A1; % (nh x m)

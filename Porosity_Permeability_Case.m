@@ -91,8 +91,8 @@ fprintf('Normalized deviations for permeability is = Training: %.5f , CV: %.5f, 
 %% Visualization
 Y_again = mapminmax('reverse',testOut,PS_Y);
 A2_again = mapminmax('reverse',A2_test,PS_Y);
-Y_again_rand = reshape(Y_again(:,1),50,50);
-A2_again_rand = reshape(A2_again(:,1),50,50);
+Y_again_rand = reshape(Y_again(:,2),50,50);
+A2_again_rand = reshape(A2_again(:,2),50,50);
 Y_again_rand_bars = Y_again_rand /(10^5);
 A2_again_rand_bars = A2_again_rand /(10^5);
 difference = (Y_again_rand_bars-A2_again_rand_bars);

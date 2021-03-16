@@ -1,4 +1,5 @@
 function [cost,a3] = deep_predict(x,y,w1,b1,w2,b2,w3,b3)
+%% Forward prediction function for a neural network with 3 layers
 m = size(x,2);
 z1 = w1*x + b1;
 a1 = tanh(z1);

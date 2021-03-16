@@ -1,4 +1,4 @@
-function [cost,A2] = predict(x,y,W1,b1,W2,b2,PS)
+function [cost,A2] = predict(x,y,W1,b1,W2,b2,~)
     m = size(x,2);
     %Normalization of the input and output
 %     x_n = mapminmax(x,-1,1);
@@ -7,7 +7,7 @@ function [cost,A2] = predict(x,y,W1,b1,W2,b2,PS)
     Z1 = W1*x + b1;
     A1 = tanh(Z1);
     Z2 = W2*A1 + b2;
-    A2 = tanh(Z2);
+    A2 = max(0,Z2);
     sqrErrors= (A2-y).^2;
     cost =1./(2*m).*sum(sqrErrors);
     cost = mean(cost,'all');

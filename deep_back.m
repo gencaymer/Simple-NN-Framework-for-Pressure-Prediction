@@ -1,4 +1,5 @@
 function [dw1,db1,dw2,db2,dw3,db3] = deep_back(x,y,w1,b1,w2,b2,w3,b3,z1,a1,z2,a2,z3,a3)
+%% Backward Propagation function according to a 3 layer network with tanh as activation functions
 m= size(x,2);
 % Calculation of dz3
 dj_da3 = 2*(a3-y);
