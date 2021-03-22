@@ -16,3 +16,7 @@ deepnet.mat
 Matlab ANN Toolbox Applications/FinalMixANN.m
 Matlab ANN Toolbox Applications/Porosity_Permeability_Case_ANNLAB.m
 Datasets/input.csv
+*.docx
+*.pdf
+Recovery Estimation with ML/Test_Sweep_OD.m
+Recovery Estimation with ML/Test_Sweep_MGM.m
